@@ -1,0 +1,13 @@
+page-home {
+  .rfid-icon {
+    transition: all 0.5s ease;
+    max-width: 200px;
+    margin: 0 auto;
+    &.allow {
+      filter: hue-rotate(300deg);
+    }
+    &.deny {
+      filter: hue-rotate(170deg);
+    }
+  }
+}
