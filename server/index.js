@@ -1,13 +1,10 @@
-const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const five = require('johnny-five');
 
-const app = express();
-const httpServer = http.Server(app);
+const httpServer = http.Server();
 const io = socketIo(httpServer);
 
-let lastValue = '';
 
 const port = process.env.PORT || 3000;
 
@@ -26,6 +23,7 @@ const bytesToString = (bytes) => {
 };
 
 board.on('ready', function () {
+  let lastValue = '';
   const servo = new five.Servo(10);
   this.i2cConfig();
 
