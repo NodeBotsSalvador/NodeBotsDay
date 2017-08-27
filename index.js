@@ -13,10 +13,14 @@ const bytesToString = (bytes) => {
 
 board.on('ready', function () {
   this.i2cConfig();
+  let lastValue = '';
 
   const onChange = (bytes, value) => {
-    console.log("Bytes read: ", JSON.stringify(bytes));
-    console.log("Value read: ", value);
+    if (value != lastValue) {
+      lastValue = value;
+      console.log("Bytes read: ", JSON.stringify(bytes));
+      console.log("Value read: ", value);
+    }
   };
 
   this.i2cRead(0x08, 0x00, 32, (bytes) => {
