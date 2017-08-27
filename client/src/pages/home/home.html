@@ -6,7 +6,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
 
   <ion-grid no-padding>
     <ion-row>
@@ -27,13 +27,11 @@
   </ion-grid>
 
   <ion-card>
-    <ion-card-content>
-      <div text-center>
-        <img src="/assets/rfid.png" class="rfid-icon" [class.allow]="access" [class.deny]="!access">
-      </div>
-      <div ion-text text-center>
-        Scan your NFC Card. {{ rfid }}
-      </div>
+    <ion-card-content text-center>
+        <img src="/assets/rfid.png" class="rfid-icon" [class.allow]="access === true" [class.deny]="access === false">
+      <div *ngIf="access === null">Aproxime o cartão do leitor.</div>
+      <div *ngIf="access === false">Acesso negado!<br>{{ rfid }}</div>
+      <div *ngIf="access === true">Acesso liberado!<br>{{ rfid }}</div>
     </ion-card-content>
   </ion-card>
 
