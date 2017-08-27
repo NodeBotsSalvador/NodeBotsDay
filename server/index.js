@@ -9,15 +9,7 @@ const io = socketIo(httpServer);
 
 let lastValue = '';
 
-io.on('connection', function (socket) {
-  updateClients(lastValue);
-
-  socket.on('message', (m) => {
-    socket.emit('message', { message: 'How Are You?' });
-  });
-});
-
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 httpServer.listen(port, () => console.log('listening in http://localhost:' + port));
 
@@ -31,28 +23,36 @@ const bytesToString = (bytes) => {
     .map((code) => String.fromCharCode(code))
     .join('')
     .replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-  };
-
-const updateClients = (value) => {
-  let list = value.split('|');
-
-  if (list[0]) {
-    io.emit('rfid', list[0]);
-
-    io.emit('access', list[0] === '20:41:C2:80');
-  }
-
-  if (list[1]) {
-    io.emit('humidity', Number(list[1]));
-  }
-
-  if (list[2]) {
-    io.emit('temperature', Number(list[2]));
-  }
 };
 
 board.on('ready', function () {
+  const servo = new five.Servo(10);
   this.i2cConfig();
+
+  const updateClients = (value) => {
+    let list = value.split('|');
+
+    if (list[0]) {
+      io.emit('rfid', list[0]);
+
+      if (list[0] === '20:41:C2:80') {
+        io.emit('access', true);
+        servo.center();
+        setTimeout(() => servo.min(), 5000);
+      } else {
+        io.emit('access', false);
+        servo.min();
+      }
+    }
+
+    if (list[1]) {
+      io.emit('humidity', Number(list[1]));
+    }
+
+    if (list[2]) {
+      io.emit('temperature', Number(list[2]));
+    }
+  };
 
   const onChange = (bytes, value) => {
     if (value != lastValue) {
@@ -67,5 +67,15 @@ board.on('ready', function () {
   this.i2cRead(0x08, 0x00, 32, (bytes) => {
     let value = bytesToString(bytes);
     if (value) onChange(bytes, value);
+  });
+
+  servo.min();
+
+  io.on('connection', (socket) => {
+    updateClients(lastValue);
+
+    socket.on('message', (m) => {
+      socket.emit('message', { message: 'How Are You?' });
+    });
   });
 });
