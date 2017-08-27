@@ -9,7 +9,10 @@ Projeto para apresentação no dia 27/08/2017
 
 ### Node
 
-* [Firmata.js](https://github.com/firmata/firmata.js)
+* [Johnny Five](http://johnny-five.io)
+* [Socket.io](http://socket.io)
+* [Express](http://expressjs.com)
+* [Ionic](http://ionicframework.com)
 
 ### Arduino
 
